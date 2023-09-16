@@ -3,10 +3,37 @@ document.addEventListener('DOMContentLoaded', () => {
   let counter = 0
   let globalMonsters = []
 
+  //Helper functions
+  function getFormData(){
+    const name = document.querySelector('#name')
+    const age = document.querySelector('#age')
+    const description = document.querySelector('#description')
+    const formData = {
+      name: name.value,
+      age: age.value,
+      description: description.value
+    }
+    return formData
+  }
+  function clearForm(){
+    const name = document.querySelector('#name')
+    const age = document.querySelector('#age')
+    const description = document.querySelector('#description')
+    name.value = ''
+    age.value = ''
+    description.value = ''
+  }
   //Events
   document.getElementById('back').addEventListener('click', renderPreviousMonsters)
   document.getElementById('forward').addEventListener('click', renderNextMonsters)
-
+  function addSubmitEventListener(){
+    document.querySelector('#monster-form').addEventListener('submit', (e)=>{
+      e.preventDefault()
+      //post data to server
+      postNewMonster(getFormData())
+      clearForm()
+    })
+  }
   //Event Handlers
   function renderPreviousMonsters(){
     //clear the DOM for the next set of monsters
@@ -85,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.appendChild(createBtn)
     //append form to form container
     createMonsterContainer.appendChild(form)
-    //call addSubmitEventListener()
+    addSubmitEventListener()
   }
   
   //Fetch Requests
@@ -97,10 +124,25 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNextMonsters()
       })
   }
+  function postNewMonster(formData){
+    fetch('http://localhost:3000/monsters', {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(res => res.json())
+    .then(monster => {
+      globalMonsters.push(monster)
+    })
+  }
 
   //init
   function init() {
     fetchAllMonsters()
+    createForm()
   }
   init()
 })
