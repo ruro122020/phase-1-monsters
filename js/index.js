@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(res => res.json())
     .then(monster => {
       globalMonsters.push(monster)
+      createMonsterCard(monster)
     })
   }
 
