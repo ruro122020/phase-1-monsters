@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //global variables
   let counter = 0
   let globalMonsters = []
+
   //Events
   document.getElementById('back').addEventListener('click', renderPreviousMonsters)
   document.getElementById('forward').addEventListener('click', renderNextMonsters)
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     //render previous 50 monster
     const newMonsterList = globalMonsters.slice(counter - 100, counter - 50)
-    newMonsterList.forEach(monster => renderAllMonsters(monster))
+    newMonsterList.forEach(monster => createMonsterCard(monster))
     counter = counter - 50
     //when back button is clicked and the first 50 monsters are already rendered to DOM
     //counter will be 0, calling renderNextMonsters will keep the first 50 monsters on page
@@ -34,11 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     //render next 50 monsters
     const newMonsterList = globalMonsters.slice(counter, counter + 50)
-    newMonsterList.forEach(monster => renderAllMonsters(monster))
+    newMonsterList.forEach(monster => createMonsterCard(monster))
     counter = counter + 50
   }
   //Renders to DOM
-  function renderAllMonsters({ name, age, description }) {
+  function createMonsterCard({ name, age, description }) {
     //monster container
     const monsterContainer = document.getElementById('monster-container')
     //create elements (div(to hold all elements), h2(name), h4(age), p(description)). Note: none of the elements have id's
@@ -48,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = document.createElement('p')
     //set text to elements
     h2.textContent = name
-    h4.textContent = age
-    p.textContent = description
+    h4.textContent = `Age: ${age}`
+    p.textContent = `Description: ${description}`
     //append elements to monster container
     div.appendChild(h2)
     div.appendChild(h4)
@@ -57,6 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
     //append to dom
     monsterContainer.appendChild(div)
   }
+
+  function createForm(){
+    const createMonsterContainer = document.getElementById('create-monster')
+    //create elments
+    const form = document.createElement('form')
+    const name = document.createElement('input')
+    const age = document.createElement('input')
+    const description = document.createElement('input')
+    const createBtn = document.createElement('button')
+    //add attributes
+    form.id = 'monster-form'
+    name.id = 'name'
+    age.id = 'age'
+    description.id = 'description'
+    //set placeholders to inputs
+    name.placeholder = 'name...'
+    age.placeholder = 'age...'
+    description.placeholder = 'description...'
+    //set text
+    createBtn.textContent = 'Create'
+    //append inputs to form
+    form.appendChild(name)
+    form.appendChild(age)
+    form.appendChild(description)
+    form.appendChild(createBtn)
+    //append form to form container
+    createMonsterContainer.appendChild(form)
+    //call addSubmitEventListener()
+  }
+  
   //Fetch Requests
   function fetchAllMonsters() {
     fetch('http://localhost:3000/monsters')
